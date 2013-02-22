@@ -28,6 +28,12 @@
 
 #import "NSImage+HHTint.h"
 
+#if __has_feature(objc_arc)
+#define HH_AUTORELEASE(x) x
+#else
+#define HH_AUTORELEASE(x) [x autorelease];
+#endif
+
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -37,7 +43,7 @@
 {
 	if (tint != nil) {
 		CIFilter *colorGenerator = [CIFilter filterWithName:@"CIConstantColorGenerator"];
-		CIColor *color = [[[CIColor alloc] initWithColor:tint] autorelease];
+		CIColor *color = HH_AUTORELEASE([[CIColor alloc] initWithColor:tint]);
 
 		[colorGenerator setValue:color forKey:kCIInputColorKey];
 
@@ -64,7 +70,7 @@
 
 		CGRect extend = [outputImage extent];
 		CGSize size = extend.size;
-		NSImage *tintedImage = [[[NSImage alloc] initWithSize: NSMakeSize(size.width, size.height)] autorelease];
+		NSImage *tintedImage = HH_AUTORELEASE([[NSImage alloc] initWithSize: NSMakeSize(size.width, size.height)]);
 
 		[tintedImage lockFocus];
 		{
@@ -82,7 +88,7 @@
 		return tintedImage;
 	}
 	else {
-		return [[self copy] autorelease];
+		return HH_AUTORELEASE([self copy]);
 	}
 }
 
