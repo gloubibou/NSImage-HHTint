@@ -69,8 +69,8 @@
 		CIImage *outputImage = [compositingFilter valueForKey:kCIOutputImageKey];
 
 		CGRect extend = [outputImage extent];
-		CGSize size = extend.size;
-		NSImage *tintedImage = HH_AUTORELEASE([[NSImage alloc] initWithSize: NSMakeSize(size.width, size.height)]);
+        CGSize size = self.size;
+		NSImage *tintedImage = HH_AUTORELEASE([[NSImage alloc] initWithSize: size]);
 
 		[tintedImage lockFocus];
 		{
@@ -78,9 +78,8 @@
 			CIContext *ciContext = [CIContext contextWithCGContext:contextRef
 														   options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
 																							   forKey:kCIContextUseSoftwareRenderer]];
-			[ciContext drawImage:outputImage
-						 atPoint:CGPointMake(0, 0)
-						fromRect:extend];
+            CGRect rect = CGRectMake(0, 0, size.width, size.height);
+            [ciContext drawImage:outputImage inRect:rect fromRect:extend];
 		}
 		[tintedImage unlockFocus];
 
